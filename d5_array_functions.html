@@ -1,0 +1,75 @@
+<html>
+    <head>
+        <title>Array Functions</title>
+    </head>
+    <body>
+        <h1>Array Functions in JavaScript</h1>
+        <p id="paragraf"></p>
+        <input type="text" id="sayi" placeholder="Bir sayı girin">
+        <button id="ekle_btn">Ekle</button>
+    </body>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        var arr = ["JavaScript", "Python", "Java", "C++", "Ruby"];
+        var arr_length = arr.length;
+        var arr_to_string = arr.toString();
+        var arr_joined = arr.join(" - ");
+
+        console.log("Array Length: " + arr_length);
+        console.log("Array toString: " + arr_to_string);
+        console.log("Array joined with ' - ': " + arr_joined);
+
+        var a1 = [11, 12, 13];
+        var a2 = [21, 22, 23];
+        var a3 = [30, 31, 32];
+        var a4 = a1.concat(a2, a3);
+        console.log("Concatenated Array: " + a3.toString());
+
+        var array1 = [['a', 'b'], ['c', 'd', ['e'], 'f']];
+        var flat_array = array1.flat(Infinity);
+        console.log(flat_array);
+
+        var b1 = [5, 10, 15, 20, 25];
+        b1.push(30);
+        console.log("After push: " + b1);
+        b1.unshift(0);
+        console.log("After unshift: " + b1);
+        b1.pop();
+        console.log("After pop: " + b1);
+        b1.shift();
+        console.log("After shift: " + b1);
+
+        var c1 = [100, 200, 300, 400, 500];
+        var c2 = c1.slice(1, 4);
+        console.log("Sliced Array: " + c2);
+
+        // true/false döner
+        var d1 = [1, 2, 3, 4, 5];
+        var d2 = d1.some((value) => value > 3);
+        console.log("Some values greater than 3: " + d2);
+
+        // dizideki değerleri döner
+        var e1 = [2, 4, 6, 8, 10];
+        var e2 = e1.filter((value) => value > 5);
+        console.log("Filtered Array (values > 5): " + e2);
+
+        var sayilar = [];
+
+        $(document).on('click', '#ekle_btn', function(){
+            var deger = $('#sayi').val();
+            sayilar.push(parseInt(deger));
+            console.log(sayilar)
+        });
+    
+        $(document).on('click', '#ekle_btn', function(){
+            $('#paragraf').text(sayilar.toString());
+        });
+
+        $(document).ready(function(){
+
+        });
+
+    </script>
+</html>

@@ -1,0 +1,75 @@
+<html>
+
+<body>
+    
+</body>
+<script>
+    var name = "Şeyma";
+    var age = 25;
+    var is_in_class = true;
+    var home_address = "Bursa";
+    var new_arr = ["a", "b", "c", "d"];
+    var new_obj = {name: "Mert", age: 30};
+    console.log(new_arr[0] + new_arr[1]);
+    console.log(new_obj);
+    var number1 = 10;
+    var number2 = 20;
+    var person1 = "Ayşe";
+    var person2 = "Fatma";
+    var is_glass = null;
+
+    var ages = [10, "20", 30, 40, 50];
+    var students = ["Ayşe", "Fatma", "Mert", "Ali"];
+
+    if (ages[0] < ages[1]) {
+        console.log(ages[0] + ages[1]);
+    } else {
+        console.log("10 20'den küçük değildir");
+    }
+    // output: 1020
+
+    if (name == "Mert") {
+        if (age == 29){
+            if (is_in_class == true){
+                console.log("İsim Mert, yaş 29 ve sınıfta");
+            } else {
+                console.log("İsim Mert, yaş 29 ama sınıfta değil");
+            }
+            console.log("İsim Mert");
+    } else {
+        console.log("İsim Mert değil");
+    }
+    }
+
+    for (var i = 0; i < 5; i++){
+        console.log("index değerim: " + i);
+    }
+// eşit değilse !=
+// eşittir ==  
+// ve &&
+// veya || 
+    if(name == "Şeyma" && age == 25){
+        console.log("İsim Şeyma ve yaş 25");
+    } else if(name == "Alice"){
+        console.log("İsim Alice");
+    } else {
+        console.log("İsim Mert veya Alice değil");
+    }
+
+    var cities = ["Bursa", "İstanbul", "Ankara", "İzmir"];
+    for (var j = 0; j < 4; j++){
+        console.log("Şehirler: " + cities[j]);
+    }
+
+    var city = "Bursa";
+    for (var k = 0; k < 4; k++){
+        if (city == cities[k]){
+            console.log("Aradığım şehir: " + cities[k]);
+        }
+        else {
+            console.log("Diğer şehir: " + cities[k]);
+        }
+    }
+
+</script>
+</html>

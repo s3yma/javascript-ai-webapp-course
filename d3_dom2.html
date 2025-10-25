@@ -1,0 +1,30 @@
+<html>
+    <head>
+    <title>dom2</title>
+    </head>
+    <body>
+        <div class="divstil">
+            <ul id="liste">
+                <li> Madde 1</li>
+                <li> Madde 2</li>
+                <li> Madde 3</li>
+            </ul>
+            <button>yeni eleman ekle</button>
+            <button>eleman çıkar</button>
+        </div>
+    </body>
+    <script>
+        var eklebuton = document.getElementsByTagName("button")[0];
+        var cikartbuton = document.getElementsByTagName("button")[1];
+        var liste = document.getElementById("liste");
+
+        cikartbuton.addEventListener("click", function(){
+            liste.removeChild(liste.lastElementChild);
+        });
+        eklebuton.addEventListener("click", function(){
+            var yeni_liste_elementi = document.createElement("li");
+            yeni_liste_elementi.textContent = "Yeni madde";
+            liste.prepend(yeni_liste_elementi);
+        });
+    </script>
+</html>

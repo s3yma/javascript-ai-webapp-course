@@ -1,0 +1,58 @@
+<html>
+    <head>
+        <style>
+            .deneme {
+                color: blue;
+            }
+        </style>
+    </head>
+    <body>
+        <h1 id="baslik">javascript lifecycle</h1>
+        <p id="metin">metin yükleme</p>
+        <button id="duzeltbtn">geri al</button>
+        <ul id="liste">
+            <li>Elma</li>
+            <li>Armut</li>
+        </ul>
+        <input type="text" id="yeni_meyve" placeholder="Yeni meyve">
+        <button id="eklebtn">ekle</button>
+    </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        $(document).ready(function(){
+            $('#baslik').text('jQuery ile başlık değişti');
+            console.log("document ready");
+            $('#metin').css('color', 'red');
+
+        });
+        
+        $(document).on('click', '#duzeltbtn', function(){
+            $('#baslik').text('javascript Lifecycle');
+            $('#metin').css('color', 'black');
+        });
+
+        $(document).on('click', '#eklebtn', function(){
+           // $('#liste').append('<li>Muz</li>');
+           var yeniMeyve = $('#yeni_meyve').val();
+           console.log(yeniMeyve);
+           $('#liste').prepend('<li>' + yeniMeyve + '</li>');
+           $('#yeni_meyve').val('');
+        });
+
+        // document.getElementById('baslik').textContent = 'Vanilla JS ile başlık değişti';
+
+    
+
+        document.addEventListener("DOMContentLoaded", function(){
+            console.log("DOM tamamen yüklendi");
+        });
+
+        window.addEventListener("load", function(){
+            console.log("tüm kaynaklar yüklendi");
+        });
+
+        console.log("dom yüklenmeden çalışan kod");
+
+
+    </script>
+</html>

@@ -1,0 +1,63 @@
+<html>
+    <head>
+        <title>AJAX in JavaScript</title>
+    </head>
+    <body>
+        <button id="btnGetir">Veri Getir</button>
+        <div id="veriler"></div>
+    </body>
+    <script src="https://" > </script>
+    <script src ></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    
+
+    
+    <script>
+        $(document).ready(function(){
+            
+            $(document).on('click', '#btnGetir', function(){
+                $.ajax({
+                    url: "https://jsonplaceholder.typicode.com/posts", // veri çekilecek adres
+                    type: "GET", // GET, POST
+                    
+                    success: function(response){ // istek başarılı olursa çalışır http 200
+                        console.log("Veri başarıyla alındı:");
+                        $('#veriler').empty(); // önceki verileri temizle
+                        response.forEach(function(item){
+                            $('#veriler').append('<h3>' + item.title + '</h3><p>' + item.body + '</p><hr>');
+                        });
+                    },
+                    error: function(){ // istek başarısız olursa çalışır
+                        console.log("Hata oluştu");
+                    }
+                })
+            });
+            
+            /*
+            
+            $.ajax({
+                url: "ismek.com/api/students", // veri çekilecek adres
+                type: "GET", // GET, POST
+                data: { "name": "John", "age": 30 }, // gönderilecek veri
+                dataType: "json", // beklenen veri tipi
+                success: function(response){ // istek başarılı olursa çalışır http 200
+                    console.log("Veri başarıyla alındı:");
+                    console.log(response);
+                },
+                error: function(err){ // istek başarısız olursa çalışır
+                    console.log("Hata oluştu:");
+                    console.log(err);
+                }
+            })
+
+            */
+        });
+        
+        
+        /* AJAX Asynchronous JavaScript and XML
+         Asenkron olarak veri alışverişi yapmamızı sağlar
+         Format bağımsızdır (JSON, XML, HTML, Düz metin)
+         Sayfa yenilenmeden veri güncellenebilir
+        */
+    </script>
+</html>

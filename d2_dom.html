@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <title>DOM</title>
+    </head>
+    <style>
+        .textstili {
+            border: 2px black;
+            padding: 10px;
+            font-size: 20px;
+            background-color: lightgray;
+        }
+    </style>
+    <body>
+        <!--<img src="https://bulutistan.com/blog/wp-content/uploads/2023/02/javascript-nedir-javascript-ile-web-gelistirmeye-detayli-bakis.jpeg">>-->
+        <input type="text" class="textstili" id="egitim_merkezi">
+        <input type="password" class="textstili" id="parola">
+        <input type="number" class="textstili" id="ogrenci_sayisi">
+        <button onclick="dataAl()">Gönder</button>
+
+        <h3 id="sonuc"> </h3>
+    </body>
+    <script>
+        function dataAl(){
+            var merkez = document.getElementById("egitim_merkezi").value;
+            console.log("Eğitim merkezi: " + merkez);
+            var ogrenci_sayisi = document.getElementById("ogrenci_sayisi").value;
+            console.log("Öğrenci sayısı: " + ogrenci_sayisi);
+            document.getElementById("sonuc").innerHTML = "Eğitim merkezi: " + merkez + " Öğrenci sayısı: " + ogrenci_sayisi;
+        }
+    </script>
+</html>

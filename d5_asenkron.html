@@ -1,0 +1,45 @@
+<html>
+    <head>
+        <title>Asenkron JavaScript</title>
+    </head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <body>
+            
+    </body>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.js" integrity="sha512-+k1pnlgt4F1H8L7t3z95o3/KO+o78INEcXTbnoJQ/F2VqDVhWoaiVml/OEHv9HsVgxUaVW+IbiZPUJQfF/YxZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> 
+
+    <script>
+        $(document).ready(function(){
+            console.log("1. işlem başladı");
+            console.log("2. işlem başladı");
+            console.log("3. işlem başladı");
+
+            console.log("1. işlem başladı");
+            setTimeout(() => {
+                console.log("2. işlem gecikmeli olarak başladı");
+            }, 2000);
+            console.log("3. işlem başladı");
+        });
+
+
+        async function veriIsle(){
+            console.log("Veri isteği başladı");
+
+            var sonuc = await new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve("Veri alındı");
+                }, 3000);
+            });
+        
+            console.log(sonuc);
+            console.log("Veri işlendi");
+        }
+
+        $(document).ready(function(){
+            veriIsle();
+        });
+     </script>
+    
+</html>

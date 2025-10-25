@@ -1,0 +1,59 @@
+<html>
+    <head>
+        <title>Javascript ile hesap makinesi</title>
+    </head>
+    <body>
+        
+    </body>
+    <script>
+        var total_number = 0;
+        var number1 = 10;
+        var number2 = 20;
+        var number3 = 30;
+
+        function toplama(n1, n2){
+            return n1 + n2;
+        }
+        // return ifadesi fonksiyondan bir değer döndürmek için kullanılır
+        function cikarma(n1, n2){
+            return n1 - n2;
+
+        }
+        function carpma(n1, n2){
+            return n1 * n2;
+        }
+        function bolme(n1, n2){
+            return n1 / n2;
+        }
+        toplama(number1, number2);
+       
+        console.log(cikarma(number3, number1));
+        console.log(carpma(number1, number2));
+        console.log(bolme(number2, number1));
+        console.log(toplama("Merhaba ", "Dünya"));
+        console.log(cikarma("Merhaba ", "Dünya")); // NaN (Not a Number)
+        console.log(carpma("Merhaba ", "Dünya")); // NaN (Not a Number)
+        console.log(bolme("Merhaba ", "Dünya")); // NaN (Not a Number)
+
+        console.log(Math.sqrt(16)); // karekök alma
+        console.log(Math.pow(2, 3)); // üs alma
+        console.log(Math.PI); // pi sayısı
+        console.log(Math.round(4.6)); // en yakın tam sayıya yuvarlama
+        console.log(Math.ceil(4.1)); // yukarı yuvarlama
+        console.log(Math.floor(4.9)); // aşağı yuvarlama
+        console.log(Math.min(1, 2, 3, 4, 5)); // en küçük sayıyı bulma
+        console.log(Math.max(1, 2, 3, 4, 5)); // en büyük sayıyı bulma
+        console.log(Math.random()); // 0 ile 1 arasında rastgele sayı üretme
+        console.log(Math.random() * 100); // 0 ile 100 arasında rastgele sayı üretme
+        console.log(Math.floor(Math.random() * 100)); // 0 ile 100 arasında rastgele tam sayı üretme
+
+        // random fonksiyonu araştırılacak
+        function rastgeleSayi(min, max){
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+        //
+
+
+
+    </script>
+</html>

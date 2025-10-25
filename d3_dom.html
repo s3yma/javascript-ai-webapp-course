@@ -1,0 +1,48 @@
+<html>
+    <head>
+        <title>Dom işlemleri</title>
+        <style>
+            .paragrafstili {
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1 id="baslik"> Html üzerinde işlemler</h1>
+        <p class="paragrafstili">Paragraf örneği</p>
+        <p class="paragrafstili">İkinci paragraf örneği</p>
+        <p class="paragrafstili">Modül 1</p>
+
+        <h3 id="mesaj">ismek eğitimine hoş geldiniz</h3>
+        <button id="degistir">değiştir</button>
+        <button id="geri al">eski haline çevir</button>
+    </body>
+    <script>
+        // text content
+        // handle, unique = eşsiz
+        // foreach data kadar döner .forEach
+        
+        var baslik = document.getElementById("baslik");
+        var paragraflar = document.querySelectorAll(".paragrafstili");
+        paragraflar.forEach(p => console.log(p.textContent));
+        // paragraflar.forEach(function(sayi, index){
+        //     console.log(sayi.textContent); undefined veriyor forda (length ile de çözülebilr) custom spesifik konularda for kullanılır 
+
+        var mesaj = document.getElementById("mesaj");
+        var degistirbuton = document.getElementById("degistir");
+        degistirbuton.addEventListener("click", function(){
+            console.log("butona tıklandı");
+            // fonksiyon yazarken console.loga yazdır, alışknalık olsun kontrollü ilerle sonra kaldır
+            mesaj.textContent = "AI model dönüş yaptı";
+            mesaj.style.color = "blue";
+        });
+
+        var gerialbuton = document.getElementById("geri al");
+        gerialbuton.addEventListener("click", function(){
+            mesaj.textContent = "ismek eğitimine hoş geldiniz";
+            mesaj.style.color = "black";
+        });
+
+    </script>
+</html>

@@ -1,0 +1,65 @@
+<html>
+    <head>
+        
+       <title>2. hafta hesap makinesi</title> 
+        <style>
+        .div1 {
+            width: 700px;
+            height: 200px;
+            float: left;
+            margin-left: 300px;
+            margin-top: 200px;
+        }
+
+        .div2 {
+            width: 500px;
+            height: 200px;
+            float: left;
+            margin-top: 200px;
+        }
+        </style>
+    </head>
+    <body>
+        <div class="div1">
+            <input type="text" placeholder="Sayı 1" id="sayi1">
+            <input type="text" placeholder="İşlem" id="islem">
+            <input type="text" placeholder="Sayı 2" id="sayi2">
+        </div>
+        <div class="div2">
+            <input type="button" value="Hesapla" id="hesaplaBtn">
+        </div>
+    </body>
+    <script>
+        function topla(sayi1, sayi2){
+            return parseInt(sayi1) + parseInt(sayi2);
+        }
+        function cikar(sayi1, sayi2){
+            return parseInt(sayi1) - parseInt(sayi2);
+        }
+        function carp(sayi1, sayi2){
+            return parseInt(sayi1) * parseInt(sayi2);
+        }
+        function bol(sayi1, sayi2){
+            return parseInt(sayi1) / parseInt(sayi2);
+        }
+
+        document.getElementById("hesaplaBtn").addEventListener("click", function(){
+            var sayi1 = document.getElementById("sayi1").value;
+            var islem = document.getElementById("islem").value;
+            var sayi2 = document.getElementById("sayi2").value;
+        
+            if (islem == "+"){
+                alert("Sonuç: " + topla(sayi1, sayi2));
+            } else if (islem == "-"){
+                alert("Sonuç: " + cikar(sayi1, sayi2));
+            } else if (islem == "*"){
+                alert("Sonuç: " + carp(sayi1, sayi2));
+            } else if (islem == "/"){
+                alert("Sonuç: " + bol(sayi1, sayi2));
+            } else {
+                alert("Geçersiz işlem girdiniz!");
+            }
+        
+        })
+    </script>   
+</html>
