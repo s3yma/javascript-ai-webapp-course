@@ -5,6 +5,7 @@
     <body>
         <button id="btnGetir">Veri Getir</button>
         <div id="veriler"></div>
+        <p id="status"></p>
     </body>
     <script src="https://" > </script>
     <script src ></script>
@@ -16,10 +17,25 @@
         $(document).ready(function(){
             
             $(document).on('click', '#btnGetir', function(){
+                $('#status').text('Veri getiriliyor...');
+            });
+            $(document).on('click', '#btnGetir', function(){
                 $.ajax({
                     url: "https://jsonplaceholder.typicode.com/posts", // veri çekilecek adres
-                    type: "GET", // GET, POST
+                    timeout: 2000, // istek zaman aşımı süresi
+                    method: "GET",
                     
+
+                    beforeSend: function(){ // istek gönderilmeden önce çalışır
+                        console.log("İstek gönderilmeden önceki durum");
+                        
+                    },
+
+                    complete: function(){ // istek tamamlandıktan sonra çalışır
+                        console.log("İstek tamamlandı");
+                        $('#status').text('Veri getirildi.');
+                    },
+
                     success: function(response){ // istek başarılı olursa çalışır http 200
                         console.log("Veri başarıyla alındı:");
                         $('#veriler').empty(); // önceki verileri temizle
@@ -27,8 +43,10 @@
                             $('#veriler').append('<h3>' + item.title + '</h3><p>' + item.body + '</p><hr>');
                         });
                     },
-                    error: function(){ // istek başarısız olursa çalışır
-                        console.log("Hata oluştu");
+                    error: function(xhr, status, error){ // istek başarısız olursa çalışır
+                        console.log("Durum: "+status); // timeout, parsererror gibi
+                        cınsole.log("Hata mesajı: "+error); // not found, internal server error gibi
+                        console.log("HTTP Durum Kodu: "+xhr.status); // 404, 500 gibi
                     }
                 })
             });

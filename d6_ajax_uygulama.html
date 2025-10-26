@@ -1,0 +1,101 @@
+<html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+        <h2>Kullanıcılar</h2>
+        <div>Yükleniyor...</div>
+
+        <button id="getUser">Kullanıcıları getir</button>
+        <button id="addUser">Yeni kullanıcı ekle</button>
+
+        <table id="userTable" border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>İsim</th>
+                    <th>Email</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+    </body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <script>
+        
+        function renderUsers(users){
+            var tbody = $('#userTable tbody');
+            tbody.empty();
+            $.each(users, function(index, user){
+                tbody.append(`
+                    <tr>
+                        <td>${user.id}</td>
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td>
+                            <button class="editUser">Güncelle</button>
+                            <button class="deleteUser">Sil</button>
+                        </td>
+                    </tr>
+                
+                `)
+            });
+        
+        
+        }
+        
+        $(document).on('click', '#getUser', function(){
+            $.ajax({
+                url: "https://jsonplaceholder.typicode.com/users",
+                method: "GET",
+                dataType: "json",
+                cache: false,
+                timeout: 3000,
+                beforeSend: function(){
+                    console.log("Kullanıcılar getiriliyor...");
+                },
+                success: function(data){
+                    console.log(data);
+                    renderUsers(data);
+                    
+                },
+                complete: function(){
+                    console.log("İstek tamamlandı.");
+                },
+
+                error: function(xhr, status, error){
+                    console.log("Kullanıcılar getirilirken hata oluştu. Durum: "+status+", Hata: "+error+", HTTP Kodu: "+xhr.status);
+                }
+            });
+        });
+        
+        $(document).on('click', '#addUser', function(){
+           // var oluşturulacak
+           
+            $.ajax({
+                url: "https://jsonplaceholder.typicode.com/users",
+                method: "POST",
+                dataType: "json",
+                data: {"id": 1},
+                success: function(data){
+                },
+                error: function(xhr, status, error){
+                    console.log("Hata: "+error);
+                }
+                
+            })
+        });
+
+        $(document).ready(function(){
+
+        })
+
+
+
+    </script>
+
+</html>
