@@ -1,0 +1,122 @@
+<html>
+  <head>
+    <title>AJAX Uygulama Ödevi</title>
+  </head>
+
+  <body>
+    <button id="verial">Veri Al</button>
+
+    <input type="text" id="yenikayit" placeholder="Yeni veri gir...">
+    <button id="verikaydet">Veriyi Kaydet</button>
+
+    <button id="yzgonder">Yapay Zekaya Gönder</button>
+
+    <ul id="list"></ul>
+  </body>
+
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script>
+    /*
+      ARAŞTIRMA ÖDEVİ:
+      "Post atacağınız bir endpointe nasıl header gönderebilirsiniz ve ne işe yarar?"
+
+      Bir endpoint'e POST isteği gönderirken, istekle birlikte bazı ek bilgiler (metadata) göndermek için HTTP header'larını kullanırız.
+      Header’lar, verinin nasıl işleneceğini veya hangi formatta olduğunu sunucuya bildirir.
+
+      Örneğin:
+        - "Content-Type": Gönderilen verinin formatını belirtir. (örneğin "application/json")
+        - "Authorization": API erişimi için anahtar veya token gönderir.
+        - "Accept": Sunucudan hangi formatta cevap beklediğimizi belirtir.
+
+      Header göndermek için jQuery AJAX’ta “headers” özelliği kullanılır:
+        $.ajax({
+          url: "https://example.com/api",
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer 12345token"
+          },
+          data: JSON.stringify(veri)
+        });
+    */
+
+    // Sayfa açıldığında LocalStorage'daki verileri göster
+    $(document).ready(function () {
+      showData();
+    });
+
+    // "Veri Al" butonuna tıklayınca JSONPlaceholder'dan verileri al
+    $("#verial").on("click", function() {
+        $.ajax({
+            url: "https://jsonplaceholder.typicode.com/posts",
+            method: "GET",
+            dataType: "json",
+            success: function(data){
+            console.log("Gönderiler başarıyla getirildi.");
+
+            // Eski verileri temizleyelim (isteğe bağlı)
+            localStorage.clear();
+
+            // Her post'u ayrı ayrı kaydet
+            data.forEach(post => {
+                localStorage.setItem(`post_${post.id}`, JSON.stringify(post));
+            });
+
+            showData();
+            },
+            error: function(err){
+            console.error("Veri alınamadı:", err);
+            }
+        });
+        });
+
+
+    // LocalStorage'daki verileri listeye ekrana yazdır
+    function showData() {
+        $("#list").empty();
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith("post_")) {
+            const item = JSON.parse(localStorage.getItem(key));
+            $("#list").append(`<li>${item.title}</li>`);
+            }
+        }
+        }
+
+
+    // "Veriyi Kaydet" butonuna tıklayınca yeni veri ekle
+    $("#verikaydet").on("click", function () {
+      const inputData = $("#yenikayit").val().trim();
+      if (!inputData) return alert("Lütfen bir metin girin.");
+      let posts = JSON.parse(localStorage.getItem("posts")) || [];
+      posts.push({ title: inputData });
+      localStorage.setItem("posts", JSON.stringify(posts));
+      $("#list").append(`<li>${inputData}</li>`);
+      $("#yenikayit").val("");
+      console.log("Yeni veri kaydedildi:", inputData);
+    });
+
+    // "Yapay Zekaya Gönder" butonuna tıklayınca POST isteği gönder
+    $("#yzgonder").on("click", function () {
+      const posts = JSON.parse(localStorage.getItem("posts")) || [];
+
+      $.ajax({
+        url: "https://jsonplaceholder.typicode.com/posts",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: JSON.stringify(posts),
+        success: function (response) {
+          console.log("Veri yapay zekaya gönderildi:", response);
+          alert("Veriler başarıyla gönderildi!");
+        },
+        error: function (err) {
+          console.error("Veri gönderilemedi:", err);
+        },
+      });
+    });
+  </script>
+</html>

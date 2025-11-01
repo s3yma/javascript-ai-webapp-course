@@ -1,0 +1,66 @@
+<html>
+    <head>
+        <title>Tensorflow.js Giriş</title>
+    </head>
+    <body>
+        <h1>Tensorflow.js Basit Lineer Regresyon</h1>
+    </body>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"> </script>
+    <script>
+        // WebGL => tarayıcıda GPU kullanmamızı sağlar
+        // node.js üzerinde cuda destekli GPU ile daha performanslı kullanım yapabiliriz
+
+        /*
+        Görüntü işleme => Resim sınıflandırma, nesne tespiti, yüz tanıma
+        Doğal dil işleme => Metin sınıflandırma, duygu analizi, chatbot
+        Zaman serisi analizi => Hisse senedi tahmini, hava durumu tahmini
+        Oyun geliştirme => Yapay zeka oyuncuları, oyun içi öneri sistemleri
+
+        Tensorflow.js Avantajları:
+        - Tarayıcı tabanlı çalışır, ek yazılım kurulumu gerekmez
+        - Gerçek zamanlı uygulamalar için uygundur
+        - Geniş model ve kütüphane desteği
+        - JavaScript ekosistemi ile entegrasyon kolaylığı
+        - Python bilmeden veya platformdan bağımsız olarak tarayıcı üzerinde makine öğrenimi modelleri geliştirme imkanı
+        - Kullanıcı verileri cihazda kalır, gizlilik avantajı sağlar
+
+        Tensorflow.js Dezavantajları:
+        - Tarayıcı kaynakları sınırlıdır, büyük modellerde performans sorunları yaşanabilir
+        - GPU erişimi sınırlıdır, karmaşık işlemler için yetersiz kalabilir
+        - JavaScript'in makine öğrenimi için optimize edilmemiş olması nedeniyle bazı işlemler yavaş olabilir   
+
+        */
+
+        console.log(tf.version.tfjs); // Tensorflow.js sürümünü gösterir
+
+        tf.ready().then(() => {
+            console.log("Kullanım: " + tf.getBackend());
+
+        });
+
+
+        // Model oluşturma
+        var model = tf.sequential(); // Katmanların sırayla eklendiği basit bir model
+        // units = 1 = çıktıda 1 değer olacak
+        // inputShape = [1] = girdi tek boyutlu bir dizi olacak
+        model.add(tf.layers.dense({ units: 1, inputShape: [1] })); 
+
+        // Modeli derleme
+        // loss = kayıp fonksiyonu, modelin ne kadar iyi performans gösterdiğini ölçer
+        // optimizer = optimizasyon algoritması, modelin öğrenme sürecini yönetir
+        model.compile({ loss: 'meanSquaredError', optimizer: 'sgd' });
+
+        // Eğitim verisi oluşturma
+        var xs = tf.tensor2d([1, 2, 3, 4], [4, 1]); // 4 satır, 1 sütun giriş verileri
+        var ys = tf.tensor2d([1, 3, 5, 7], [4, 1]); // 4 satır, 1 sütun hedef değerleri
+
+        // Modeli eğitme
+        model.fit(xs, ys, { epochs: 1000 }).then(() => {
+            // Eğitim tamamlandıktan sonra tahmin yapma
+            var output = model.predict(tf.tensor2d([5], [1, 1])); // 5 girdisi için tahmin yapar
+            output.print(); // Tahmin sonucunu konsola yazdırır
+            console.log("Tahmin sonucu: " + output.dataSync()[0]); // Tahmin sonucunu alır ve gösterir
+        });
+
+    </script>
+</html>
