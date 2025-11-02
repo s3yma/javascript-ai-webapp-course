@@ -1,0 +1,49 @@
+<html>
+    <head>
+        <title>Görüntü İşleme</title>
+        <style>
+            body{font-family: Arial; text-align: center; margin-top: 50px;}
+            img {max-width: 300px; margin-top: 20px; border-radius: 8px;}
+            #result {font-size: 1.3em; font-weight: bold; margin-top: 20px;}
+        </style>
+    </head>
+    <body>
+        <h2>Tensorflow ile Görüntü İşleme</h2>
+        <input type="file" id="imageUpload" accept="image/*" />
+        <img id="preview" style="display: none;" alt="Seçilen Görsel">
+        <div id="result"></div>
+        
+    </body>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0"> </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"> </script>
+
+    <script>
+        var model;
+
+        $(document).ready(async function() {
+            $('#result').text('Model yükleniyor, lütfen bekleyin...');
+            model = await mobilenet.load();
+            $('#result').text('Model yüklendi. Lütfen bir görsel seçin.');
+        });
+
+        $(document).on('change', '#imageUpload', async function (e) {
+            var file = e.target.files[0];
+            if (!file){
+                return false;
+            }
+            var img = $('#preview');
+            img.attr('src', URL.createObjectURL(file));
+            img.show();
+
+            img.on("load", async function(){
+                var predictions = await model.classify(this);
+                console.log(predictions);
+            })
+            
+        })
+
+    </script>
+</html>
