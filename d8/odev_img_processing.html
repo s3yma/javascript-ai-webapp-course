@@ -1,0 +1,79 @@
+<html>
+  <head>
+    <title>Ödev: Görüntü İşleme</title>
+  </head>
+  <body>
+    <input type="file" id="imageUpload" accept="image/*" />
+    <img id="preview" style="display: none" alt="Seçilen Görsel" />
+    <p id="result"></p>
+
+    <h2>Önceki Tahminler</h2>
+    <div id="sonuclar"></div>
+  </body>
+
+  <script
+    src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+    crossorigin="anonymous"
+  ></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+
+  <script>
+    var model;
+
+    $(document).ready(async function () {
+      yukleSonuclar();
+      $("#result").text("Model yükleniyor, lütfen bekleyin...");
+      model = await mobilenet.load();
+      $("#result").text("Model yüklendi. Lütfen bir görsel seçin.");
+    });
+
+    $(document).on("change", "#imageUpload", async function (e) {
+      var file = e.target.files[0];
+      if (!file) return;
+
+      var img = $("#preview");
+      img.attr("src", URL.createObjectURL(file));
+      img.show();
+
+      img.off("load").on("load", async function () {
+        var predictions = await model.classify(img[0]);
+        kaydetVeGoster(predictions);
+      });
+    });
+
+    function kaydetVeGoster(predictions) {
+      const text = predictions
+        .map((p) => `${p.className} (${(p.probability * 100).toFixed(2)}%)`)
+        .join("\n");
+      $("#result").text(text);
+      kaydetLocal(predictions);
+      yukleSonuclar();
+    }
+
+    function kaydetLocal(predictions) {
+      const text = predictions
+        .map((p) => `${p.className} (${(p.probability * 100).toFixed(2)}%)`)
+        .join(", ");
+      let toplam = parseInt(localStorage.getItem("tahmin_sayisi")) || 0;
+      localStorage.setItem("tahmin_" + toplam, text);
+      localStorage.setItem("tahmin_sayisi", toplam + 1);
+    }
+
+    function yukleSonuclar() {
+      var sonucDiv = $("#sonuclar");
+      sonucDiv.empty();
+      var toplamSonuc = localStorage.getItem("tahmin_sayisi") || 0;
+      for (var i = 0; i < toplamSonuc; i++) {
+        var tahmin = localStorage.getItem("tahmin_" + i);
+        if (tahmin) {
+          var yeniSonuc = $("<div></div>").text(tahmin);
+          sonucDiv.append(yeniSonuc);
+        }
+      }
+    }
+  </script>
+</html>
