@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <title>Transfer Learning</title>
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"> 
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> 
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script> 
+        <!-- Universal Sentencer Encoder modeli --> 
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder"></script>
+
+        <style>
+            body {background: #f5f7fa; font-family: Arial, sans-serif; padding: 20px;}
+            .card {box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 15px;}
+            .btn-custom {background-color: #007bff; color: white;}
+            .btn-custom:hover {background-color: #0056b3; color: white; transition: 0.5s;}
+            #result {font-size: 1.2em; margin-top: 15px;}
+       </style>
+    </head>
+    <body>
+        
+        <div class="container">
+            <div class="card p-4 mx-auto" style="max-width: 600px;">
+                <h3 class="text-center mb-3">Tensorflow.js ile duygu analizi</h3>
+                <p class="text-muted text-center">Duygu Analizi</p>
+            
+            <div class="mb-3">
+                <label for="inputText" class="form-label"></label>
+                <textarea class="form-control" id="inputText" rows="3" placeholder="Örnek Cümleler"></textarea>
+            </div>
+
+            <div class="d-grid">
+                <button id="predictBtn" class="btn btn-custom">Analiz et</button>
+            
+            <div id ="loading" class="text-center mt-3 text-secondary">Model yükleniyor, lütfen bekleyin...</div>
+                
+            <div id="result" class="text-center fw-bold mt-3"></div>
+            <hr>
+            <div>
+                <h6>Eğitim Günlüğü</h6>
+                <div id="log" class="border rounded p-2 bg-light" style="height: 150px;overflow-y: auto;font-size: 0.9rem;"></div>
+            </div>
+            </div>
+            
+            
+        </div>
+
+    </body>
+    <script>
+        var model;
+        var encoder;
+
+        function logMessage(msg){
+            $('#log').append(`<div>${msg}</div>`);
+        }
+
+        async function LoadAndTrain() {
+            logMessage('Universal Sentence encoder yükleniyor...');
+            encoder = await use.load();
+            logMessage('USE modeli yüklendi.');
+        
+            // Yeni bir sinir ağı. Transfer learning ile kullanılacak
+            model = tf.sequential(); // Katmanlı model oluşur
+            model.add(tf.layers.dense({inputShape: [512], units: 16, activation: 'relu'})); // 512 boyutlu girdi, 16 nöronlu gizli katman
+            model.add(tf.layers.dropout({rate: 0.2})); // Aşırı öğrenmeyi önler
+            model.add(tf.layers.dense({units: 2, activation: 'softmax'})); // 2 sınıflı çıktı katmanı (pozitif/negatif)
+        
+            model.compile({
+                optimizer: tf.train.adam(0.001), // adam optimizasyon algoritması
+                loss: "categoricalCrossentropy", // Çok sınıflı kayıp fonksiyonu
+                metrics: ["accuracy"] // Doğruluk metriği
+            })
+
+            logMessage("Yeni sınıflandırıcı model oluşturuldu.");
+
+            // Eğitim verisi (örnek cümleler ve etiketler)
+            var sentences = [
+                "I love this product!", // Pozitif
+                "This is the worst experience I've ever had.", // Negatif
+                "Absolutely fantastic service.", // Pozitif
+                "I will never buy this again.", // Negatif
+                "Highly recommend to everyone!", // Pozitif
+                "Terrible quality and bad customer support." // Negatif
+            ];
+            
+            var labels = tf.tensor2d([
+                [1, 0], // Pozitif
+                [0, 1], // Negatif
+                [1, 0], // Pozitif
+                [0, 1], // Negatif
+                [1, 0], // Pozitif
+                [0, 1]  // Negatif
+            ]);
+            
+            $('#loading').text("Model eğitiliyor...")
+            var embeddings = await encoder.embed(sentences); // Cümleleri vektörlere dönüştürür
+
+            await model.fit(embeddings, labels, {
+                epochs: 20, // 20 tur
+                batchSize: 2, // her seferde 2 örnek
+                shuffle: true, // Her epoch'ta veriyi karıştır
+                callbacks: {
+                    onEpochEnd: (epoch, logs) => { // Her epoch sonunda log mesajı
+                        logMessage(`Epoch ${epoch + 1}: loss=${logs.loss.toFixed(4)}, accuracy=${(logs.acc * 100).toFixed(2)}%`);
+                    }
+            }
+            });
+            $('#loading').text("Model yüklendi ve eğitildi.");
+            logMessage("Model eğitimi tamamlandı.");
+        }
+        
+        $(document).ready(function(){
+            LoadAndTrain();
+        });
+
+
+        /*
+        Pre-trained model = Önceden eğitilmiş model
+        Training from scratch = Sıfırdan eğitme
+
+        Avantajları:
+        Zaman tasarrufu => Eğitim süresi kısalır çünkü model zaten temel özellikleri öğrenmiştir.
+        Az veri ihtiyacı => Yeni görev için çok az etiketli veri yeterli olabilir.
+        Maliyet tasarrufu => GPU kaynakları az kullanılır.
+        Daha iyi doğruluk => Önceden eğitilmiş modeller genellikle daha iyi başlangıç ağırlıklarına sahiptir.
+        Transerfer learning olanağı => Model, benzer bir göreve kolayca uyarlanabilir.
+
+        Eğitilmiş modellerle çalışma
+        -Feature Extraction (Özellik Çıkarımı): Önceden eğitilmiş modelin ağırlıklarını dondurup, son katmanı yeniden eğitilir.
+                                                Model, yeni görevdeki sınıflara göre çıktı katmanını yeniden öğrenir.
+        -Fine-Tuning (İnce Ayar): Önceden eğitilmiş modelin bazı üst katmanları yeniden eğitilir. Özellikle yeni görev öncekiyle benzerse çok etklidir.
+
+        Kullanım alanları:
+        Görüntü işleme => MobileNet, ResNet, VGG, EfficientNet
+        Doğal dil işleme => BERT, GPT, RoBERTa
+        Ses işleme => WaveNet, DeepSpeech, Whisper
+
+        Trasnfer learning adımları:
+        1. Önceden eğitilmiş modeli yükle
+        2. Son katmanı kaldır veya değiştir
+        3. Yeni veri setini ekle
+        4. Modeli yeniden eğit
+        5. Modeli değerlendir ve ayarla
+
+        Transfer Learning (Aktarım Öğrenmesi), bir modelin bir görevde veya veri kümesinde öğrendiği bilgiyi,
+        başka bir görevde veya veri kümesinde kullanma tekniğidir.
+        
+        Dikkat edilmesi gerekenler:
+        Benzer görevler => Eğer yeni görev öncekinden çok farklıysa, transfer learning etkili olmayabilir.
+        Katman seçimi => Hangi katmanların dondurulacağı veya yeniden eğitileceği dikkatlice seçilmelidir.
+        */
+    
+    </script>
+</html>
