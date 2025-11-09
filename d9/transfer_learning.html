@@ -34,8 +34,13 @@
                 <button id="predictBtn" class="btn btn-custom">Analiz et</button>
             
             <div id ="loading" class="text-center mt-3 text-secondary">Model yükleniyor, lütfen bekleyin...</div>
-                
-            <div id="result" class="text-center fw-bold mt-3"></div>
+            <hr>
+
+            <div>
+                <h6>Sonuç</h6>
+                <div id="result" class="text-center fw-bold mt-3"></div>
+            </div>
+
             <hr>
             <div>
                 <h6>Eğitim Günlüğü</h6>
@@ -81,7 +86,13 @@
                 "Absolutely fantastic service.", // Pozitif
                 "I will never buy this again.", // Negatif
                 "Highly recommend to everyone!", // Pozitif
-                "Terrible quality and bad customer support." // Negatif
+                "Terrible quality and bad customer support.", // Negatif
+                "I love my cat.",
+                "I hate rainy days.",
+                "The movie was amazing!",
+                "Everything about this place is awful.",
+                "I am very happy today.",
+                "This is a disappointing outcome."
             ];
             
             var labels = tf.tensor2d([
@@ -90,7 +101,13 @@
                 [1, 0], // Pozitif
                 [0, 1], // Negatif
                 [1, 0], // Pozitif
-                [0, 1]  // Negatif
+                [0, 1],  // Negatif
+                [1, 0],
+                [0, 1],
+                [1, 0],
+                [0, 1],
+                [1, 0],
+                [0, 1]
             ]);
             
             $('#loading').text("Model eğitiliyor...")
@@ -110,10 +127,29 @@
             logMessage("Model eğitimi tamamlandı.");
         }
         
+        async function predictText() {
+            var text = $('#inputText').val();
+            if (!text) {
+                alert("Lütfen bir metin girin.");
+                return;
+            }
+            $('#result').text("Tahmin yapılıyor...");
+            var emb = await encoder.embed([text]); // Metni vektöre dönüştür
+            var prediction = model.predict(emb); // Tahmin yap
+            var result = await prediction.arraySync()[0]; // Sonucu diziye dönüştür
+            
+            console.log(result[0], result[1]);
+            var sentiment = result[0] > result[1] ? "Pozitif" : "Negatif";
+            $('#result').text(`Duygu: ${sentiment}`);
+        }   
+
         $(document).ready(function(){
             LoadAndTrain();
         });
 
+        $(document).on('click', '#predictBtn', function(){
+            predictText();
+        });
 
         /*
         Pre-trained model = Önceden eğitilmiş model
