@@ -1,0 +1,201 @@
+<html>
+    <head>
+        <title>Machine Learning ile Araba Fiyat Tahmini</title>
+        
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> 
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
+        
+        <style>
+        .output-container {
+        display: flex;
+        align-items: flex-start; 
+        gap: 16px; 
+        }
+
+        .output-box {
+        flex: 1; 
+        }
+
+        #trainingContainer {
+        width: 1300px; 
+        position: relative;
+        background: #f1f1f1;
+        border-radius: 10px;
+        height: 30px;
+        overflow: hidden;
+        }
+
+        #progressBar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100%;
+        }
+
+        #carIcon {
+        position: absolute;
+        top: 3px;
+        left: 0;
+        font-size: 24px;
+        transform: scaleX(-1); 
+        transition: left 0.2s linear;
+        }
+
+
+    </style>
+    
+    </head>
+
+    <body class="bg-light">
+        <div class="container mt-5">
+            <h2 class="mb-4">Machine Learning Ödevi</h2>
+            <h4>2. El Araba Fiyat Tahmin Uygulaması</h4>
+            <button id="trainBtn" class="btn btn-primary">Eğitimi Başlat</button>
+
+           <div class="mt-4">
+        <div class="header-with-progress">
+            <h5 class="output-title">Eğitim Çıktısı</h5>
+            <div id="trainingContainer">
+            <div id="progressBar">
+                <div id="carIcon">🚗</div>
+            </div>
+            </div>
+        </div>
+
+        <pre id="output" class="bg-white text-dark p-3 rounded"
+            style="height: 300px; overflow: auto;"></pre>
+        </div>
+
+
+        <div>
+            <h5 class="mt-4">Tahmin İçin Araba Bilgileri</h5>
+            <input type="number" id="year" placeholder="Yıl" class="form-control mb-2" />
+            <input type="number" id="km" placeholder="Kilometre" class="form-control mb-2" />
+            <input type="number" id="engine" placeholder="Motor Hacmi" class="form-control mb-2" />
+        </div>
+
+        <div>
+            <button id="predictBtn" class="btn btn-success">Fiyat Tahmin Et</button>
+        </div>
+        <div class="mt-4">
+            <h5>Tahmin Sonucu</h5>
+            <pre id="predictionOutput" class="bg-white text-dark p-3 rounded"
+            style="height: 100px; overflow: auto;"></pre>
+        </div>
+        
+    </body>
+    <script>
+        var model;
+
+        $(document).on("click", '#trainBtn', async function(){
+            $('#output').text("Eğitim başlatılıyor...\n");
+
+            model = tf.sequential();
+
+            // İlk gizli katman
+            model.add(tf.layers.dense({
+                units: 16, // 16 nöron
+                inputShape: [3], // 3 girdi (yıl, km, motor hacmi)
+                activation: 'relu' // Aktivasyon fonksiyonu
+            }))
+
+            // İkinci gizli katman
+            model.add(tf.layers.dense({
+                units: 8, // 8 nöron
+                activation: 'relu'
+            }))
+
+            // Çıkış katmanı
+            model.add(tf.layers.dense({
+                units: 1, // Tek çıktı (fiyat)
+                activation: 'linear' // Regresyon için lineer aktivasyon
+            }))
+
+            // Modeli derleme
+            model.compile({
+                optimizer: tf.train.adam(0.01), 
+                loss: 'meanSquaredError',
+                metrics: ['mse']
+            });
+
+            // Eğitim Verileri
+            const trainingData = tf.tensor2d([
+                [2010, 150000, 1600],
+                [2012, 120000, 1800],
+                [2015, 90000, 2000],
+                [2018, 60000, 2200],
+                [2020, 30000, 2500],
+                [2011, 140000, 1500],
+                [2013, 110000, 1700],
+                [2016, 80000, 2100],
+                [2019, 40000, 2300],
+                [2021, 20000, 2600]
+            ]);
+
+            const outputData = tf.tensor2d([
+                [500000],
+                [700000],
+                [1000000],
+                [1500000],
+                [2000000],
+                [550000],
+                [750000],
+                [1100000],
+                [1600000],
+                [2100000]
+            ]);
+
+            // Modeli eğitme
+            $('#output').append("Model eğitiliyor...\n");
+
+                await model.fit(trainingData, outputData, {
+                    epochs: 70,
+            callbacks: {
+                onEpochEnd: (epoch, logs) => {
+                // Eğitim metni
+                $('#output').append(`Epoch ${epoch + 1}: ${logs.loss}\n`);
+                $('#output').scrollTop($('#output')[0].scrollHeight);
+
+                // Arabayı hareket ettir
+                const progress = ((epoch + 1) / 70) * 100;
+                $('#carIcon').css('left', `calc(${progress}% - 20px)`); // -20px: ikon ortalaması için
+                },
+                onTrainEnd: () => {
+                $('#output').append("Eğitim tamamlandı!\n");
+                $('#carIcon').css('left', 'calc(100% - 24px)');
+                }
+            }
+            });
+            });
+
+    
+
+        $(document).on("click", '#predictBtn', async function(){
+            var year = parseFloat($('#year').val());
+            var km = parseFloat($('#km').val());
+            var engine = parseFloat($('#engine').val());
+
+            if (isNaN(year) || isNaN(km) || isNaN(engine)) {
+                alert("Lütfen tüm girişleri doldurun.");
+                return;
+            }
+
+            var inputTensor = tf.tensor2d([[year, km, engine]]);
+            var prediction = model.predict(inputTensor);
+            var predictedValue = (await prediction.data())[0];
+
+            $('#predictionOutput').text(`Tahmin Edilen Fiyat: ${predictedValue.toFixed(2)} TL`);
+        });
+
+        $(document).ready(function(){
+
+            console.log("Sayfa yüklendi - Araba Fiyat Tahmini");
+        })
+
+        
+
+    </script>
+
+</html>
