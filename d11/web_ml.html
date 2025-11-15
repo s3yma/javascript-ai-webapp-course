@@ -1,0 +1,53 @@
+<html>
+    <head>
+
+    </head>
+
+    <head>
+
+    </head>
+
+    <script>
+        /* Performans ve Hızlandırma (WebGL/WebGpu)
+        - Makine öğrenimi modelleri yoğun matematiksel hesaplamalar gerektirir.
+        Tarayıcıdaki standart Javascript(CPU) bu yükü taşımakta yetersiz kalır.
+        - WebGL => TensorFlow.js gibi kütüphaneler, hesaplamaları CPU yerine 
+        GPU'da kullanabilmek için WebGL API'sini kullanır.
+        - WebGPU => WebGL, 3D grafikler için tasarlanmış eski bir API'dir.
+        WebGPU, ML iş yükleri için daha verimli paralel hesaplama yeteneği ve modern GPU özellikleri sunar.
+
+        Model Dönüşümü ve Optimizasyonu
+        - Model Dönüştürme (Conversion):
+          Bir python modelinin tarayıcıda çalışabilmesi için, öncelikle TensorFlow.js'in
+          anlayabileceği JSON formatına dönüştürülmesi gerekir. Tensorflow.js dönüştürücü aracı bu işlemi yapar.
+        - Ağırlık Kuantizasyonu (Weight Quantization):
+          Modelin dosya boyutunu küçültmek ve yükleme sürelerini hızlandırmak için ağırlık kuantizasyonu uygulanabilir.
+          Kuantizasyon, model ağırlıklarını 8-bit veya 16-bit tamsayılara düşürür.
+          Bu modelin boyutunu %75'e kadar azaltırken, genellikle kabul edilebilir bir doğruluk kaybuna neden olur.
+        - Katman Füzyonu (Layer Fusion):
+          Bazı ardışık katmanlar tek bir katmanda birleştirilebilir.
+          Bu, hesaplama verimliliğini artırır ve modelin çalışma süresini azaltır.
+
+        İstemci Tarafında Eğitim (On-Device Training):
+        - Transfer Öğrenimi (Transfer Learning):
+          Bu tarayıcıda eğitim için yaygın bir yaklaşımdır. Önceden eğitilmiş bir model alınır ve,
+          belirli bir görev için son katmanları yeniden eğitilir.
+        - Federated Learning:
+          Gizliliği korumaya odaklanan bir yaklaşımdır. Model, kullanıcı verilerini cihazda tutarak,
+          yerel olarak eğitilir ve ardından sonuçlar anonimleştirilerecek merkezi bir sunucuya gönderilir.
+
+        Uygulama Mimarisi
+        Göz önünde bulundurulması gerekenler:
+        - Model Yükleme Stratejileri
+          Büyük modeller, kullanıcı etkileşimi başlamadan önce yüklemek yerine, gerektiğinde (lazy loading) veya
+          önce düşük çözünürlüklü/küçük bir modelle (progressive loading) yüklenerek kullanıcı deneyimi iyileştirilebilir.
+        - Çoklu İş Parçacığı (Web Workers)
+          ML işlemleri, tarayıcının ana kullanıcı arayüzü (UI) iş parçacığını (thread) dondurabilir. Bu sorunu aşmak
+          için Web Workers kullanılabilir. Bu, ML görevlerini arka planda çalıştırarak UI'nin duyarlı kalmasını sağlar.
+        - Çevrimdışı Yetenekler
+        
+        
+        
+          */
+    </script>
+</html>
