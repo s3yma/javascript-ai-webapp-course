@@ -45,9 +45,41 @@
           ML işlemleri, tarayıcının ana kullanıcı arayüzü (UI) iş parçacığını (thread) dondurabilir. Bu sorunu aşmak
           için Web Workers kullanılabilir. Bu, ML görevlerini arka planda çalıştırarak UI'nin duyarlı kalmasını sağlar.
         - Çevrimdışı Yetenekler
+          Service Workers kullanılarak model ağırlıkları ve kodları önbelleğe alınabilir. Bu sayede uygulama, kullanıcı
+          internet bağlantısını kaybetse bile ML tahminleri yapmaya devam edebilir.
         
+        WebGpu
+        Web tarayıcıları için oluşturulmuş yeni bir Javascript API'sidir. Temel amacı, hem 3d grafik oluşturma hem de genel
+        amaçlı GPU hesaplamalarını standartlaştırmaktır.
+        WebGPU'nun önemi, mevcut GPU API'leri (Directx, Vulkan, Metal) gibi düşük seviyeli ve modern GPU yeteneklerine tam
+        erişim sağlamasıdır. WebGL, daha eski ve kısıtlı bir standart olan OpenGL'den türetilmiştir.
+        Avantajlar:
+        - Paralellik ve Verim:
+          WebPU, asenkron çalışma biçimiyle tasarlanmıştır. Bu, CPU'nun GPU'ya birden fazla görev vermesine olanak tanır ve
+          bekleme sürelerini azaltarak ML iş yüklerinde önemli performans iyileştirmeleri sağlar.
+        - Gelişmiş Bellek Yönetimi:
+          Kaynak yönetimi üzerinde daha doğrudan kontrol sunar. Bu, model ağırlıklarının ve ara verilerin GPU belleğinde daha verimli
+          depolanmasını sağlar.
+        - Modern Programlama Modeli:
+          WebGPU, gölgelendirici(shader) programları için özel olarak tasarlanmış, WGSL(WebGPU Shading Language) adı verilen yeni bir
+          dil kullanır. WGSL, modern GPU gölgelendirici dillerine benzer, daha temiz bir syntax ve daha iyi hata ayıklama özellikleri sunar.
+        - Düşük CPU Yükü:
+          WebGL'e kıyasla API çağrılarının yükünü önemli ölçüde azaltır. Bu özellikle karmaşık ve büyük ML modellerini çalıştıran
+          CPU'nun diğer görevler için daha fazla kaynak ayırmasını sağlar.
         
-        
+        Çalışma Mantığı
+        WebGPU'yu web tabanlı makine öğreniminde kullanmak, temel olarak GPU'yu bir hesaplama motoru olarak kullanmak anlamına gelir.
+
+        Hesaplama İş Akışı
+        ML'de WebGPU, grafikleri çizmekten ziyade, Hesaplama İşlemlerine(Compute Operations) odaklanır.
+        - Veri Yükleme: Model ağırlıkları ve giriş verileri, Javascript tarafından GPU belleğine tamponlar(buffers) olarak yüklenir.
+        - WGSL Gölgelendiricileri: Her bir ML operasyonu GPU'nun paralel olarak yürüteceği bir WGSL gölgelendrici çekirdeği (kernel)
+        olarak tanımlanır. Bu çekirdekler, modelin matematiksel işlemlerini gerçekleştirir.
+        - Komut Kuyruğu: Javascript, GPU'ya hangi tamponları kullanacağını ve hangi WGSL çekirdeğini çalıştıracağını belirten komutları
+        bir kuyruğa ekler.
+        - Sonuç Okuma: Hesaplama sonuçları GPU belleğinden okunur ve Javascript'in erişebileceği CPU belleğine geri aktarılır.
+
+          
           */
     </script>
 </html>
